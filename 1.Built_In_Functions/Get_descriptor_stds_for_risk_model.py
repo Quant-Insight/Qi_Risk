@@ -6,7 +6,7 @@
 # Inputs:
 #               * date_from [date] (optional) - End date of data required 'YYYY-MM-DD' format.
 #               * date_to [date] (optional) - End date of data required 'YYYY-MM-DD' format.
-#               * risk_model[str] (required) - The Factor Set. If your portfolio consists of approximately 90% US or Canadian assets, please use the US Models with or without the market (QI_US_MACRO_MT_1). Note that all global equities are also included in the US models.
+#               * risk_model[str] (required) - The Factor Set. If your equity focus consists of approximately 90% US or Canadian assets, please use the US Models with or without the market (QI_US_MACRO_MT_1). Note that all global equities are also included in the US models.
 #
 # Output: Dictionary
 # Units: stds
