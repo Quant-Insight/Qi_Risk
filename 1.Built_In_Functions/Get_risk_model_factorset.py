@@ -4,7 +4,7 @@
 # is a QI API endpoint to retrieve risk model's factorset.
 # 
 # Inputs:
-#               * risk_model[str] (required) - The Factor Set. If your equity focus consists of approximately 90% US or Canadian assets, please use the US Models with or without the market (QI_US_MACRO_MT_1). Note that all global equities are also included in the US models.
+#               * risk_model[str] (required) - The Factor Set. If your equity focus consists of approximately 90% US or Canadian assets, please use the US Models with or without the market (QI_US_MACRO_MT_1). All securities have Global and US models.
 #
 # Output: Dictionary
 #       [{'descriptor': 'USD 10Y Real Rate', 'factor': 'Real Rates'},
