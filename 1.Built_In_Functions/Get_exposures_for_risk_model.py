@@ -9,6 +9,7 @@
 #               * risk_model[str] (required) - The Factor Set e.g 'QI_US_MACRO_MT_1'
 #               * identifier[str] (required) - The indentifier that you want to pull data from
 # Output: Dictionary
+# Units: %
 #               * e.g.
 #                    
 #                   {'2023-01-02': {'10Y Yield': 0.0347415,
