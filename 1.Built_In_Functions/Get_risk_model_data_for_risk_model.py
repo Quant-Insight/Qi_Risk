@@ -9,6 +9,7 @@
 #               * risk_model[str] (required) - The Factor Set e.g 'QI_US_MACRO_MT_1'
 #               * instrument[str] (required) - The instrument that you want to pull data from e.g 'SPY'
 # Output: Dictionary
+# Units: %
 #               * e.g.
 #                    
 #                    {'2023-01-02': {'factor_return': -0.0459811,
