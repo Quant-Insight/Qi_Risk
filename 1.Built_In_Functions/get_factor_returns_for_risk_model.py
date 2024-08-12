@@ -12,7 +12,7 @@
 # If your equity focus consists of approximately 90% US or Canadian assets, please use the US Model with or without the market. All securities have Global and US models.
 #
 # Output: Dictionary
-# Units: %
+# Units: standard deviations (factor % return timeseries standardised - divided by rolling 250d std)
 #               * e.g.
 #                    
 #                     {'2023-01-02': {'10Y Yield': 0.48414,
@@ -52,7 +52,7 @@ risk_model = 'QI_US_MACRO_MT_1'
 date_from = '2023-01-01'  
 date_to = '2023-12-31' 
 try:
-    api_response = api_instance.get_factor_returns_for_risk_model(risk_model, date_from = date_from, date_to = date_to)
+    api_response = api_instance.get_factor_returns_for_risk_model(risk_model, date_from=date_from, date_to=date_to)
     pprint(api_response)
 except ApiException as e:
-    print(f"Exception when calling DefaultApi:get_descriptor_stds_for_risk_model: {e}")
+    print(f"Exception when calling DefaultApi:get_factor_returns_for_risk_model: {e}")
