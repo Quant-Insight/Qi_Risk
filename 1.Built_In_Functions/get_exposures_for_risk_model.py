@@ -52,10 +52,10 @@ api_instance = qi_client.DefaultApi(qi_client.ApiClient(configuration))
 risk_model = 'QI_US_MACRO_MT_1' 
 date_from = '2023-01-01'  
 date_to = '2023-12-31'
-identifier='SPX Index' 
+identifier = 'SPX Index' 
 
 try:
-    api_response = api_instance.get_exposures_for_risk_model(risk_model, identifier = identifier, date_from=date_from, date_to=date_to)
+    api_response = api_instance.get_exposures_for_risk_model(risk_model, identifier=identifier, date_from=date_from, date_to=date_to)
     pprint(api_response)
   
 except ApiException as e:
