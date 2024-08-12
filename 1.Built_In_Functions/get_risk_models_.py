@@ -1,9 +1,8 @@
 #############################################################################################################################################################################################
 #
-# get_risk_models_for_identifier()
+# get_risk_models()
 # is a QI API endpoint to retrieve all of the risk models.
-# Inputs:
-#                * identifier: identifier used to find risk models for which it is a constituent of (e.g. AAPL US Equity).
+#
 # Output: List
 #
 #               ['QI_EU_MACRO_MT_1',
@@ -11,7 +10,9 @@
 #                'QI_EU_MACROMKT_MT_1',
 #                'QI_US_MACROMKT_MT_1',
 #                'QI_GLOBAL_MACROMKT_MT_1',
-#                'QI_GLOBAL_MACRO_MT_1']
+#                'QI_GLOBAL_MACRO_MT_1'
+#                'QI_APAC_MACROMKT_MT_1',
+#                'QI_APAC_MACRO_MT_1']
 #                 
 #############################################################################################################################################################################################
 
@@ -29,13 +30,9 @@ configuration.api_key['X-API-KEY'] = 'YOUR_API_KEY'
 # Instantiate API class.
 api_instance = qi_client.DefaultApi(qi_client.ApiClient(configuration))
 
-# identifier used to find risk models for which it is a constituent of.
-# Datatype: str
-identifier = 'AAPL US Equity'
-
 try:
-    api_response = api_instance.get_risk_models_for_identifier(identifier)
+    api_response = api_instance.get_risk_models()
     pprint(api_response)
 
 except ApiException as e:
-    print(f"Exception when calling DefaultApi:get_risk_models_for_identifier: {e}")
+    print(f"Exception when calling DefaultApi:get_risk_models: {e}")
