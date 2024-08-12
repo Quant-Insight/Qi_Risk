@@ -46,4 +46,4 @@ try:
     api_response = api_instance.get_risk_model_factorset(risk_model)
     pprint(api_response)
 except ApiException as e:
-    print(f"Exception when calling DefaultApi:get_descriptor_stds_for_risk_model: {e}")
+    print(f"Exception when calling DefaultApi:get_risk_model_factorset: {e}")
