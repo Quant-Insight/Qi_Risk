@@ -1,11 +1,11 @@
 #############################################################################################################################################################################################
 #
-# get_risk_model_universe(risk_model, identifier_type=identifier_type,include_delisted=include_delisted)
-# is a QI API endpoint to retrieve risk model data for a specific instrument during a given time frame.
+# get_risk_model_universe(risk_model, identifier_type=identifier_type, include_delisted=include_delisted)
+# is a QI API endpoint to retrieve a risk model's asset universe.
 # 
 # Inputs:
 #               * risk_model[str] (required) - The Factor Set. If your equity focus consists of approximately 90% US or Canadian assets, please use the US Models with or without the market (QI_US_MACRO_MT_1). All securities have Global and US models.
-#               * identifier_type[str] (Optional) -Type of identifier to return the universe - the default is SEDOL (optional)
+#               * identifier_type[str] (Optional) -Type of identifier to return the universe - the default is 'SEDOL' (optional). Other identifier_types: 'ISIN', 'BloombergTicker'.
 #               * include_delisted[str](Optional)- Flag to include delisted instruments (True/False)
 # 
 # Output: List
