@@ -57,7 +57,7 @@ instrument='SPY'
 
 
 try:
-    api_response = api_instance.get_risk_model_data_for_risk_model(risk_model, instrument = instrument, date_from = date_from, date_to = date_to)
+    api_response = api_instance.get_risk_model_data_for_risk_model(risk_model, instrument=instrument, date_from=date_from, date_to=date_to)
     pprint(api_response)
 except ApiException as e:
-    print(f"Exception when calling DefaultApi:get_descriptor_stds_for_risk_model: {e}")
+    print(f"Exception when calling DefaultApi:get_risk_model_data_for_risk_model: {e}")
