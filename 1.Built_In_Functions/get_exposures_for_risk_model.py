@@ -1,13 +1,17 @@
 #############################################################################################################################################################################################
 #
-# get_exposures_for_risk_model(risk_model, identifier , date_from=date_from,date_to=date_to)
-# is a QI API endpoint to retrieve the exposures for the factor set for a defined identifier during a given time frame.
+# get_exposures_for_risk_model(risk_model, identifier, date_from=date_from, date_to=date_to)
+# is a QI API endpoint to retrieve the exposures for a given identifier and risk model across a period of time (max 1 year per query).
 # 
 # Inputs:
-#               * date_from [date] (optional) - End date of data required 'YYYY-MM-DD' format.
+#               * date_from [date] (optional) - Start date of data required 'YYYY-MM-DD' format.
 #               * date_to [date] (optional) - End date of data required 'YYYY-MM-DD' format.
-#               * risk_model[str] (required) - The Factor Set. If your equity focus consists of approximately 90% US or Canadian assets, please use the US Models with or without the market (QI_US_MACRO_MT_1). All securities have Global and US models.
-#               * identifier[str] (required) - The indentifier that you want to pull data from
+#               * risk_model[str] (required) - 8 models (4 regions with and without market): QI_US_MACROMKT_MT_1, QI_US_MACRO_MT_1, QI_EU_MACROMKT_MT_1, QI_EU_MACRO_MT_1,
+#                                                                                            QI_APAC_MACROMKT_MT_1, QI_APAC_MACRO_MT_1, QI_GLOBAL_MACROMKT_MT_1, QI_GLOBAL_MACRO_MT_1.
+#               * identifier[str] (required) - The indentifier you want to pull data for.
+#
+#               If your equity focus consists of approximately 90% US or Canadian assets, please use the US Model with or without the market. All securities have Global and US models.
+#
 # Output: Dictionary
 # Units: %
 #               * e.g.
