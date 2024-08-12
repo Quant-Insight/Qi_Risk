@@ -1,6 +1,6 @@
 #############################################################################################################################################################################################
 #
-# get_exposures_for_risk_model(risk_model, identifier, date_from=date_from, date_to=date_to)
+# get_exposures_for_risk_model(risk_model, instrument/identifier, date_from=date_from, date_to=date_to)
 # is a QI API endpoint to retrieve the exposures for a given identifier and risk model across a period of time (max 1 year per query).
 # 
 # Inputs:
