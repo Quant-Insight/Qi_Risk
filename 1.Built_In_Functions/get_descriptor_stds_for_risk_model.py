@@ -12,7 +12,7 @@
 # If your equity focus consists of approximately 90% US or Canadian assets, please use the US Model with or without the market. All securities have Global and US models.
 #
 # Output: Dictionary
-# Units: stds
+# Units: %
 #               * e.g.
 #                    
 #                       {'2023-01-02': {'Copper': 1.74467,
