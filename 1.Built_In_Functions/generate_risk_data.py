@@ -23,7 +23,7 @@
 #                      ...
 #               * risk_model[str] (required) - 8 models (4 regions with and without market): QI_US_MACROMKT_MT_1, QI_US_MACRO_MT_1, QI_EU_MACROMKT_MT_1, QI_EU_MACRO_MT_1,
 #                                                                                            QI_APAC_MACROMKT_MT_1, QI_APAC_MACRO_MT_1, QI_GLOBAL_MACROMKT_MT_1, QI_GLOBAL_MACRO_MT_1.
-# Output: dict - For each day, you can access the following data:
+# Output: dict - For each day within the output, you can access the following data:
 #                * factor_returns
 #                * covariance_matrix
 #                * specific_returns
