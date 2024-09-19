@@ -1,7 +1,7 @@
 #############################################################################################################################################################################################
 #
 # generate_risk_data(asset, returns, risk_model)
-# This function uses the Qi API function run_risk_model(model, timeseries) to generate the risk model data, given the returns timeseries. 
+# This function uses the Qi API function run_risk_model(model, timeseries) to generate the risk model data, given an asset's returns timeseries. 
 # 
 # Inputs:
 #               * asset[str] (required) - The asset you want to run the risk model for. 
