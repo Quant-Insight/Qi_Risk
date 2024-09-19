@@ -1,10 +1,9 @@
 #############################################################################################################################################################################################
 #
-# generate_risk_data(asset, returns, risk_model)
+# generate_risk_data(returns, risk_model)
 # This function uses the Qi API function run_risk_model(model, timeseries) to generate the risk model data, given an asset's returns timeseries. 
 # 
-# Inputs:
-#               * asset[str] (required) - The asset you want to run the risk model for. 
+# Inputs: 
 #               * returns[dict] (required) - A dictionary with the returns timeseries of the asset you want to run the risk model for. 
 #                  * e.g. 
 #                    {'2019-01-02': 0.26554799904132675,
@@ -72,7 +71,7 @@ def process_risk_response(response):
         last_evaluated_key = response.get('last_evaluated_key', None)
         return risk_data, last_evaluated_key
 
-def generate_risk_data(model, returns, risk_model):
+def generate_risk_data(returns, risk_model):
         
         job = api_instance.run_risk_model(risk_model, {"timeseries": returns})
         job_id = job['job_id']
@@ -111,12 +110,11 @@ def generate_risk_data(model, returns, risk_model):
         return(risk_data)
 
 
-asset = 'IYT'
-risk_model = 'QI_US_MACRO_MT_1'
 returns = {...}
+risk_model = 'QI_US_MACRO_MT_1'
 
 try:
-  risk_data = generate_risk_data(asset, returns, risk_model)
+  risk_data = generate_risk_data(returns, risk_model)
   pprint(risk_data)
 except ApiException as e:
   print(f"Exception when calling DefaultApi:generate_risk_data: {e}")
