@@ -210,6 +210,20 @@ class RiskData:
         factor_attribution = self.exposures.shift(1) * self.factor_returns
         return factor_attribution
 
+    def get_cumulative_attribution(self) -> pd.DataFrame:
+        """
+        Calculates the cumulative return attribution, given an asset.
+
+        Returns:
+            pd.DataFrame: Cumulative return attribution table.
+        """    
+        risk_model_data_df = self.risk_model_data[['total_return', 'factor_return']].rename(columns = {'total_return': 'actual', 'factor_return': 'factor'})
+
+        attribution_df = 100 * ((((risk_model_data_df / 100) + 1).cumprod()) - 1)
+        attribution_df['specific'] = (attribution_df['actual'] - attribution_df['factor'])
+
+        return attribution_df
+
     @staticmethod
     def get_weighted_returns(
         returns: pd.DataFrame, half_life: int
