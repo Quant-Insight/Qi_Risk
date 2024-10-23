@@ -79,7 +79,6 @@
         date_from = '2024-01-01'
         date_to = '2024-10-22'
         # api_key = 'YOUR-API-KEY'
-        api_key = 'VE3SLeAb1y9x5vAJ6nncd50v3L9tvQZZ6273ggjT'
     
         try:
             attribution_df = pd.DataFrame()
