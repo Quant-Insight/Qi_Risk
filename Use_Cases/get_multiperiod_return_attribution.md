@@ -73,12 +73,13 @@
     
     
     if __name__ == "__main__":
-    
+
         model = 'QI_US_MACRO_MT_1'
         asset = 'SPY'
         date_from = '2024-01-01'
         date_to = '2024-10-22'
-        api_key = 'YOUR-API-KEY'
+        # api_key = 'YOUR-API-KEY'
+        api_key = 'VE3SLeAb1y9x5vAJ6nncd50v3L9tvQZZ6273ggjT'
     
         try:
             attribution_df = pd.DataFrame()
@@ -88,17 +89,9 @@
                 risk_data = RiskData(
                     model, asset, periods[period], date_to, api_key
                 )
-                attribution_df[period] = risk_data.get_cumulative_attribution()(
-                    [['factor', 'specific', 'actual']]
-                    .rename(
-                        columns={
-                            'factor': 'Factor',
-                            'specific': 'Specific',
-                            'actual': 'Actual',
-                        }
-                    )
-                    .T[date_to]
-                )
+                attribution_df[period] = risk_data.get_cumulative_attribution()[
+                    ['Factor', 'Specific', 'Actual']
+                ].T[date_to]
     
             print(attribution_df)
     
