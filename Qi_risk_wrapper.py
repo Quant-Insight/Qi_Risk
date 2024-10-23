@@ -23,12 +23,12 @@ from typing import Callable, Dict, List
 
 import numpy as np
 import pandas as pd
-
 import qi_client
 from qi_client.rest import ApiException
 
 RISK_WIN = 125
 HALF_LIFE = 90
+
 
 class ApiData:
     """
@@ -43,11 +43,12 @@ class ApiData:
             api_key (str): User's API key provided by Qi.
         """
 
-        configuration = qi_client.Configuration() 
+        configuration = qi_client.Configuration()
 
         configuration.api_key['X-API-KEY'] = api_key
-        self.api_instance = qi_client.DefaultApi(qi_client.ApiClient(configuration))
-
+        self.api_instance = qi_client.DefaultApi(
+            qi_client.ApiClient(configuration)
+        )
 
     @staticmethod
     def _get_data_for_func(
@@ -153,7 +154,7 @@ class ApiData:
         cov_data = self._get_data_for_func(func, model, date_from, date_to)
 
         return cov_data
-    
+
 
 class RiskData:
     """
@@ -169,7 +170,14 @@ class RiskData:
         factor_covariance (Dict): Covariance data for risk factors over time.
     """
 
-    def __init__(self, model: str, asset: str, date_from: str, date_to: str, api_key: str):
+    def __init__(
+        self,
+        model: str,
+        asset: str,
+        date_from: str,
+        date_to: str,
+        api_key: str,
+    ):
         """
         Initializes the RiskData class by retrieving necessary risk data for a given asset
         over the specified time range.
@@ -200,9 +208,10 @@ class RiskData:
 
     def get_factor_attribution(self) -> pd.DataFrame:
         """
-        Calculates factor attributions, which represent the contributions of each factor to the asset's returns.
-        For factor return attributions we use exposures on t-1, and factor returns on t, to calculate factor
-        attributions on t.
+        Calculates factor attributions, which represent the contributions of
+        each factor to the asset's returns.
+        For factor return attributions we use exposures on t-1, and factor
+        returns on t, to calculate factor attributions on t.
 
         Returns:
             pd.DataFrame: A DataFrame containing factor attributions.
@@ -216,13 +225,34 @@ class RiskData:
 
         Returns:
             pd.DataFrame: Cumulative return attribution table.
-        """    
-        risk_model_data_df = self.risk_model_data[['total_return', 'factor_return']].rename(columns = {'total_return': 'actual', 'factor_return': 'factor'})
+        """
+        risk_model_data_df = self.risk_model_data[
+            ['total_return', 'factor_return']
+        ].rename(columns={'total_return': 'Actual', 'factor_return': 'Factor'})
 
-        attribution_df = 100 * ((((risk_model_data_df / 100) + 1).cumprod()) - 1)
-        attribution_df['specific'] = (attribution_df['actual'] - attribution_df['factor'])
+        attribution_df = 100 * (
+            (((risk_model_data_df / 100) + 1).cumprod()) - 1
+        )
+        attribution_df['Specific'] = (
+            attribution_df['Actual'] - attribution_df['Factor']
+        )
 
         return attribution_df
+
+    def get_cumulative_factor_attribution(self) -> pd.DataFrame:
+        """
+        Calculates the cumulative factor return attribution, given an asset.
+
+        Returns:
+            pd.DataFrame: A DataFrame containing cumulative factor attributions.
+        """
+
+        daily_factor_attribution_df = self.get_factor_attribution()
+        factor_attribution_df = 100 * (
+            (((daily_factor_attribution_df / 100) + 1).cumprod()) - 1
+        )
+
+        return factor_attribution_df
 
     @staticmethod
     def get_weighted_returns(
