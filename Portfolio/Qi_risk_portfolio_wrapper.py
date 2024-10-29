@@ -696,11 +696,32 @@ class PortfolioRiskData(RiskData):
         date_to,
     ):
 
-        portfolio_universe = df_portfolio['Identifier'].astype(str)
+        portfolio_universe = df_portfolio['Identifier'].tolist()
 
+        # Get identifiers that are not within the risk model universe.
+        missing_identifiers = list(
+            set(portfolio_universe) - set(risk_model_universe)
+        )
+
+        # Remove cash positions as we don't cover them.
+        cash_identifiers = [
+            identifier
+            for identifier in portfolio_universe
+            if 'CASH' in identifier
+        ]
+
+        missing_identifiers = missing_identifiers + cash_identifiers
+
+        portfolio_universe = [
+            identifier
+            for identifier in portfolio_universe
+            if identifier not in missing_identifiers
+        ]
+
+        # Get instruments from portfolio identifiers.
         portfolio_mapping = api_instance.get_instruments_from_identifiers(
             {
-                "identifiers": portfolio_universe.tolist(),
+                "identifiers": portfolio_universe,
                 "target_date": date_to,
             }
         )
@@ -708,15 +729,20 @@ class PortfolioRiskData(RiskData):
             portfolio_mapping['resolved_instruments'].values()
         )
 
-        missing_identifiers = portfolio_mapping['unresolved_identifiers']
+        # Get missing identifiers.
+        missing_identifiers = (
+            missing_identifiers + portfolio_mapping['unresolved_identifiers']
+        )
 
+        # Get instruments form the chosen risk model.
         risk_model_mapping = api_instance.get_instruments_from_identifiers(
             {
                 "identifiers": risk_model_universe,
                 "target_date": date_to,
             }
         )
-        model_identifiers = list(
+
+        risk_model_instruments = list(
             risk_model_mapping['resolved_instruments'].values()
         )
 
@@ -726,13 +752,18 @@ class PortfolioRiskData(RiskData):
             if instrument not in missing_identifiers
         ]
 
-        df_portfolio['Instrument'] = existing_identifiers
+        df_portfolio_ex_missing = df_portfolio[
+            ~df_portfolio.Identifier.isin(missing_identifiers)
+        ]
+        df_portfolio_ex_missing.loc[:, 'Instrument'] = existing_identifiers
 
+        # Check if any of the existing identifiers have missing historical data.
         api_data = ApiData()
+
         missing_historical_data = [
-            df_portfolio[df_portfolio.Instrument == instrument][
-                'Identifier'
-            ].tolist()[0]
+            df_portfolio_ex_missing[
+                df_portfolio_ex_missing.Instrument == instrument
+            ]['Identifier'].tolist()[0]
             for instrument in existing_identifiers
             if len(
                 api_data.get_exposure_data(
@@ -746,8 +777,10 @@ class PortfolioRiskData(RiskData):
             instrument
             for instrument in existing_identifiers
             if instrument
-            not in df_portfolio[
-                df_portfolio.Identifier.isin(missing_historical_data)
+            not in df_portfolio_ex_missing[
+                df_portfolio_ex_missing.Identifier.isin(
+                    missing_historical_data
+                )
             ]['Instrument'].tolist()
         ]
 
