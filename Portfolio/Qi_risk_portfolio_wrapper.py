@@ -688,12 +688,20 @@ class PortfolioRiskData(RiskData):
         return dict(items)
 
     def get_portfolio_coverage(
-        self, portfolio_universe, risk_model_universe, target_date
+        self,
+        df_portfolio,
+        risk_model_universe,
+        risk_model,
+        date_from,
+        date_to,
     ):
+
+        portfolio_universe = df_portfolio['Identifier'].astype(str)
+
         portfolio_mapping = api_instance.get_instruments_from_identifiers(
             {
                 "identifiers": portfolio_universe.tolist(),
-                "target_date": target_date,
+                "target_date": date_to,
             }
         )
         portfolio_identifiers = list(
@@ -705,17 +713,46 @@ class PortfolioRiskData(RiskData):
         risk_model_mapping = api_instance.get_instruments_from_identifiers(
             {
                 "identifiers": risk_model_universe,
-                "target_date": target_date,
+                "target_date": date_to,
             }
         )
         model_identifiers = list(
             risk_model_mapping['resolved_instruments'].values()
         )
 
-        covered_identifiers = [
+        existing_identifiers = [
             instrument
             for instrument in portfolio_identifiers
             if instrument not in missing_identifiers
         ]
 
-        return missing_identifiers, covered_identifiers
+        df_portfolio['Instrument'] = existing_identifiers
+
+        api_data = ApiData()
+        missing_historical_data = [
+            df_portfolio[df_portfolio.Instrument == instrument][
+                'Identifier'
+            ].tolist()[0]
+            for instrument in existing_identifiers
+            if len(
+                api_data.get_exposure_data(
+                    risk_model, instrument, date_from, date_to
+                )
+            )
+            == 0
+        ]
+
+        covered_identifiers = [
+            instrument
+            for instrument in existing_identifiers
+            if instrument
+            not in df_portfolio[
+                df_portfolio.Identifier.isin(missing_historical_data)
+            ]['Instrument'].tolist()
+        ]
+
+        return (
+            missing_identifiers,
+            missing_historical_data,
+            covered_identifiers,
+        )
