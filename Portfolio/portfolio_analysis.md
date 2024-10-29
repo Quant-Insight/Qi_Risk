@@ -20,7 +20,7 @@
     #                                                 The file must have the following format:
     #
     #                                                 | Identifier     | Weight |
-    #                                                 | AAPL US Equity | 0.3    |
+    #                                                 | 2046251        | 0.3    |
     #                                                 | ...            | ...    |
     #
     #               * portfolio_analysis_name [str] (required) - Name of the file with the output data 
@@ -28,7 +28,7 @@
     #               * identifier_type [str] (required) - Identifier type included in the portfolio.
     #                                                    It can take the following values:
     #                                                    
-    #                                                    BloombergTicker, ISIN or SEDOL
+    #                                                    SEDOL or ISIN
     # 
     #               * date_from [str] (required) - Start date of data required 'YYYY-MM-DD' format.
     #               * date_to [str] (required) - End date of data required 'YYYY-MM-DD' format.
@@ -143,7 +143,7 @@
         model = 'QI_US_MACRO_MT_1'
         date_from = '2024-01-01'
         date_to = '2024-10-25'
-        identifier_type = 'BloombergTicker' # 'BloombergTicker', 'ISIN' or 'SEDOL'
+        identifier_type = 'SEDOL' # 'SEDOL' or 'ISIN'
     
         # Get portfolio's coverage
         api_data = ApiData()
