@@ -154,24 +154,32 @@
             model, identifier_type=identifier_type, include_delisted=False
         )
     
-        df_portfolio = pd.read_excel(
-            DIR + '/' + portfolio_name
-        )
+        df_portfolio = pd.read_excel(DIR + '/' + portfolio_name)
     
-        portfolio_universe = df_portfolio['Identifier'].astype(str)
-    
-        missing_instruments, instruments = portfolio_data.get_portfolio_coverage(
-            portfolio_universe, risk_model_universe, date_to
+        missing_instruments, missing_data, instruments = (
+            portfolio_data.get_portfolio_coverage(
+                df_portfolio, risk_model_universe, model, date_from, date_to
+            )
         )
     
         df_portfolio[
             df_portfolio['Identifier'].isin(missing_instruments)
         ].to_excel(DIR + '/' + portfolio_analysis_name + '_missing.xlsx')
     
+        if len(missing_data) > 0:
+            df_portfolio[df_portfolio['Identifier'].isin(missing_data)].to_excel(
+                DIR + '/' + portfolio_analysis_name + '_missing_data.xlsx'
+            )
+    
         weights = df_portfolio[
-            ~df_portfolio['Identifier'].isin(missing_instruments)
+            ~df_portfolio['Identifier'].isin(missing_instruments + missing_data)
         ]['Weight'].tolist()
     
         portfolio_risk_to_excel(
-            portfolio_analysis_name, model, instruments, weights, date_from, date_to
+            portfolio_analysis_name,
+            model,
+            instruments,
+            weights,
+            date_from,
+            date_to,
         )
