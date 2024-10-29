@@ -40,6 +40,7 @@
     # 
     # Output: 		
     #        * Excel file showing the missing assets.
+    #        * Excel file with the assets without enough historical data.
     #        * Excel file with the covered portfolio analysis, including the following sheets:
 
 
