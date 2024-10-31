@@ -159,7 +159,8 @@
     
         missing_instruments, missing_data, instruments = (
             portfolio_data.get_portfolio_coverage(
-                df_portfolio, risk_model_universe, model, date_from, date_to
+                df_portfolio, risk_model_universe, model, date_from, date_to, 
+                identifier_type
             )
         )
     
