@@ -687,7 +687,13 @@ class PortfolioRiskData(RiskData):
                 items.append((new_key, v))
         return dict(items)
 
-     def get_portfolio_coverage(
+    def get_total_working_days(self, start_date: str, end_date: str) -> int:
+        # Generate a range of business days between the start and end dates
+        business_days = pd.bdate_range(start=start_date, end=end_date)
+        # Return the total number of business days
+        return len(business_days)
+
+    def get_portfolio_coverage(
         self,
         df_portfolio,
         risk_model_universe,
@@ -699,6 +705,8 @@ class PortfolioRiskData(RiskData):
 
         portfolio_universe = df_portfolio['Identifier'].astype(str).tolist()
 
+        # SEDOLS need to have 7 characters. However, when importing from Excel,
+        # the leading zeros are removed. This code adds them back.
         if identifier_type == 'SEDOL':
             portfolio_universe = [
                 instrument.zfill(7) if len(instrument) < 7 else instrument
@@ -751,6 +759,8 @@ class PortfolioRiskData(RiskData):
         # Check if any of the existing identifiers have missing historical data.
         api_data = ApiData()
 
+        working_days = self.get_total_working_days(date_from, date_to)
+
         missing_historical_data = [
             df_portfolio_ex_missing[
                 df_portfolio_ex_missing.Instrument == instrument
@@ -761,7 +771,7 @@ class PortfolioRiskData(RiskData):
                     risk_model, instrument, date_from, date_to
                 )
             )
-            == 0
+            < working_days
         ]
 
         covered_identifiers = [
