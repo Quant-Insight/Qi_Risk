@@ -13,7 +13,8 @@
     #               from dateutil.relativedelta import relativedelta
     #
     # Inputs: 
-    #               * date [str] (required) - Start date of data required 'YYYY-MM-DD' format.
+    #               * date [str] (required) - Date of data required 'YYYY-MM-DD' format.
+    #               * asset [str] (required) - Asset to calculate the exposures for.
     #               * risk_model[str] (required) - 8 models (4 regions with and without market):
     #                            QI_US_MACROMKT_MT_1, QI_US_MACRO_MT_1, QI_EU_MACROMKT_MT_1, 
     #                            QI_EU_MACRO_MT_1, QI_APAC_MACROMKT_MT_1, QI_APAC_MACRO_MT_1, 
