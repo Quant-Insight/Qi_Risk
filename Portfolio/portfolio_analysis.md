@@ -26,9 +26,8 @@
     #               * portfolio_analysis_name [str] (required) - Name of the file with the output data 
     #                                                            of the portfolio analysis.
     #               * identifier_type [str] (required) - Identifier type included in the portfolio.
-    #                                                    It can take the following values:
+    #                                                    It can take the following values: SEDOL
     #                                                    
-    #                                                    SEDOL or ISIN
     # 
     #               * date_from [str] (required) - Start date of data required 'YYYY-MM-DD' format.
     #               * date_to [str] (required) - End date of data required 'YYYY-MM-DD' format.
@@ -144,7 +143,7 @@
         model = 'QI_US_MACRO_MT_1'
         date_from = '2024-01-01'
         date_to = '2024-10-25'
-        identifier_type = 'SEDOL' # 'SEDOL' or 'ISIN'
+        identifier_type = 'SEDOL' 
     
         # Get portfolio's coverage
         api_data = ApiData()
