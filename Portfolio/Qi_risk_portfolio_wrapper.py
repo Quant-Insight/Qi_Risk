@@ -761,18 +761,21 @@ class PortfolioRiskData(RiskData):
 
         working_days = self.get_total_working_days(date_from, date_to)
 
-        missing_historical_data = [
-            df_portfolio_ex_missing[
-                df_portfolio_ex_missing.Instrument == instrument
-            ]['Identifier'].tolist()[0]
-            for instrument in portfolio_identifiers
-            if len(
-                api_data.get_exposure_data(
-                    risk_model, instrument, date_from, date_to
-                )
+        missing_historical_data = []
+        for instrument in portfolio_identifiers:
+            risk_model_data = api_data.get_risk_model_data(
+                risk_model, instrument, date_from, date_to
             )
-            < working_days
-        ]
+
+            if (
+                len(risk_model_data) < working_days
+                or risk_model_data.isna().any().any()
+            ):
+                missing_historical_data.append(
+                    df_portfolio_ex_missing[
+                        df_portfolio_ex_missing.Instrument == instrument
+                    ]['Identifier'].tolist()[0]
+                )
 
         covered_identifiers = [
             instrument
