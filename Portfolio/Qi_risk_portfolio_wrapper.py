@@ -1,13 +1,12 @@
-from typing import Callable, Dict, List
+import os
 from abc import ABC, abstractmethod
+from typing import Callable, Dict, List
 
 import numpy as np
 import pandas as pd
-
 import qi_client
+from joblib import Parallel, delayed
 from qi_client.rest import ApiException
-
-import os
 
 QI_API_KEY = os.environ.get('QI_API_KEY', None)
 if not QI_API_KEY:
@@ -418,10 +417,17 @@ class PortfolioRiskData(RiskData):
         ), 'array of assets must be of same length as weights'
         self.weights = weights
         self.asset_data: Dict[str, AssetRiskData] = {}
-        for asset in assets:
-            asset_risk_data = AssetRiskData(self.model)
-            asset_risk_data.get_data(asset, date_from, date_to)
-            self.asset_data[asset] = asset_risk_data
+
+        # Assuming 'assets' is your list of assets and 'self.model', 'date_from', 'date_to' are defined
+        results = Parallel(n_jobs=10)(
+            delayed(self.process_asset_data)(
+                asset, self.model, date_from, date_to
+            )
+            for asset in assets
+        )
+
+        # Collect results into the dictionary
+        self.asset_data = {asset: data for asset, data in results}
 
         self.exposures = self.calculate_portfolio_exposures()
 
@@ -436,6 +442,11 @@ class PortfolioRiskData(RiskData):
         )
         self.exposures = self.exposures.dropna()
         self.factor_risk = self.calculate_risk()
+
+    def process_asset_data(self, asset, model, date_from, date_to):
+        asset_risk_data = AssetRiskData(model)
+        asset_risk_data.get_data(asset, date_from, date_to)
+        return asset, asset_risk_data
 
     def calculate_portfolio_exposures(self) -> pd.DataFrame:
         """
@@ -693,6 +704,37 @@ class PortfolioRiskData(RiskData):
         # Return the total number of business days
         return len(business_days)
 
+    def remove_cash_positions(self, df_portfolio):
+        return df_portfolio[
+            ~df_portfolio.Identifier.str.contains('CASH')
+        ].reset_index(drop=True)
+
+    def check_missing_instrument_data(
+        self,
+        instrument,
+        api_data,
+        risk_model,
+        date_from,
+        date_to,
+        working_days,
+        df_portfolio_ex_missing,
+    ):
+        # Fetch risk model data for the instrument
+        risk_model_data = api_data.get_risk_model_data(
+            risk_model, instrument, date_from, date_to
+        )
+
+        # Check if data is insufficient or contains NaN values
+        if (
+            len(risk_model_data) < working_days
+            or risk_model_data.isna().any().any()
+        ):
+            # Find the identifier and return it if data is missing or incomplete
+            return df_portfolio_ex_missing[
+                df_portfolio_ex_missing.Instrument == instrument
+            ]['Identifier'].tolist()[0]
+        return None  # Return None if the data is sufficient
+
     def get_portfolio_coverage(
         self,
         df_portfolio,
@@ -761,21 +803,24 @@ class PortfolioRiskData(RiskData):
 
         working_days = self.get_total_working_days(date_from, date_to)
 
-        missing_historical_data = []
-        for instrument in portfolio_identifiers:
-            risk_model_data = api_data.get_risk_model_data(
-                risk_model, instrument, date_from, date_to
+        # Run the parallelized version
+        results = Parallel(n_jobs=10)(
+            delayed(self.check_missing_instrument_data)(
+                instrument,
+                api_data,
+                risk_model,
+                date_from,
+                date_to,
+                working_days,
+                df_portfolio_ex_missing,
             )
+            for instrument in portfolio_identifiers
+        )
 
-            if (
-                len(risk_model_data) < working_days
-                or risk_model_data.isna().any().any()
-            ):
-                missing_historical_data.append(
-                    df_portfolio_ex_missing[
-                        df_portfolio_ex_missing.Instrument == instrument
-                    ]['Identifier'].tolist()[0]
-                )
+        # Filter out None values to get the list of instruments with missing historical data
+        missing_historical_data = [
+            result for result in results if result is not None
+        ]
 
         covered_identifiers = [
             instrument
