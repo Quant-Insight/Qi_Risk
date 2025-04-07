@@ -373,11 +373,12 @@ class ApiData:
     def get_universe_by_model(
         self, risk_model, identifier_type, include_delisted
     ):
-        api_response = api_instance.get_risk_model_universe(
+        api_response = pd.DataFrame(api_instance.get_risk_model_universe(
             risk_model,
             identifier_type=identifier_type,
             include_delisted=include_delisted,
-        )
+        )).T[identifier_type].tolist()
+
         return api_response
 
 
