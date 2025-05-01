@@ -53,22 +53,21 @@
 
     
     from typing import List
-    
+
     import pandas as pd
     import os
     import subprocess
     import sys
         
-    os.environ['QI_API_KEY'] = 'YOUR-API-KEY'
+    os.environ['QI_API_KEY'] = 'YsqPcioaHu5C79mcFlm1N2Mva43kglpfDPbHuFsa'
     
     from Qi_risk_portfolio_wrapper import PortfolioRiskData
     from Qi_risk_portfolio_wrapper import ApiData
     from Qi_risk_portfolio_wrapper import RiskData
     
-    DIR = 'PATH-TO-YOUR-PORTFOLIO'
+    DIR = 'D:/Github/PC_Proff/Risk/Portfolio/Test'
     
     def portfolio_risk_to_excel(
-            DIR: str,
             name: str,
             model: str,
             assets: List[str],
@@ -76,11 +75,11 @@
             date_from: str,
             date_to: str,
         ) -> None:
-
+    
         # Initialise portfolio risk data class and pull/calculate required data.
         portfolio_risk = PortfolioRiskData(model)
         portfolio_risk.get_data(assets, weights, date_from, date_to)
-
+    
         factor_attribution = portfolio_risk.get_factor_attribution()
         factor_risk_proportion = portfolio_risk.get_factor_proportion_of_risk()
         factor_contribution_to_risk = (
@@ -93,32 +92,28 @@
             date_to, with_w = False, annualised=False
         )
         risk_by_stock_port,MCTR_by_stock_port,prop_by_stock_port = portfolio_risk.calculate_risk_port(date_to, annualised = False)
-
+    
         factor_attribution_by_stock = (
             portfolio_risk.get_factor_attribution_by_stock_for_period(
                 lookback = 1
-                # lookback=3 * 22
             )
         )
         exposures_by_stock = portfolio_risk.get_weighted_stock_exposures_for_date(
             date_to
         )
-
+    
         final_portfolio_df = pd.DataFrame({'Assets': assets, 'Weights': weights, 'Direction': ['L' if w > 0 else 'S' for w in weights]})
         final_portfolio_df['Asset_direction'] = final_portfolio_df['Assets'] + '_' + final_portfolio_df['Direction']
-
+    
         file_path = f'{DIR}/{name}_portfolio_{model}_{date_to}.xlsx'
-
+    
         # Create a Pandas Excel writer using Openpyxl as the engine
         with pd.ExcelWriter(file_path, engine='openpyxl') as writer:
             # Write data to different sheets
-
-            # Add the "Description" sheet
-            self.add_description_sheet(writer.book)
-
+    
             # Add the "weights" sheet
             final_portfolio_df.to_excel(writer, sheet_name='weights', index=False)
-
+    
             portfolio_risk.exposures.to_excel(
                 writer, sheet_name='exposures', index=True
             )
@@ -161,12 +156,12 @@
     
     if __name__ == '__main__':
     
-        portfolio_analysis_name = 'PORTFOLIO-OUTPUT_FILE_NAME'
-        portfolio_name = 'PORTFOLIO-FILE-NAME.xlsx'
-        model = 'QI_US_MACRO_MT_1'
-        date_from = '2024-01-01'
-        date_to = '2024-10-25'
-        identifier_type = 'SEDOL' 
+        portfolio_analysis_name = 'Growth Holdings'
+        portfolio_name = 'portfolio_test.csv'
+        model = 'QI_GLOBAL_MACRO_MT_1'
+        date_from = '2024-11-22'
+        date_to = '2025-04-29'
+        identifier_type = 'SEDOL'
     
         # Get portfolio's coverage
         api_data = ApiData()
@@ -177,7 +172,7 @@
             model, identifier_type=identifier_type, include_delisted=False
         )
     
-        df_portfolio = pd.read_excel(DIR + '/' + portfolio_name)
+        df_portfolio = pd.read_csv(DIR + '/' + portfolio_name)
     
         missing_instruments, missing_data, instruments = (
             portfolio_data.get_portfolio_coverage(
