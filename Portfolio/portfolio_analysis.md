@@ -156,7 +156,7 @@
     
     if __name__ == '__main__':
     
-        portfolio_analysis_name = 'Growth Holdings'
+        portfolio_analysis_name = 'Portfolio_output'
         portfolio_name = 'portfolio_test.csv'
         model = 'QI_GLOBAL_MACRO_MT_1'
         date_from = '2024-11-22'
