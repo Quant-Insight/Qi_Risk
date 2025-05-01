@@ -68,7 +68,6 @@
     DIR = 'PATH-TO-YOUR-PORTFOLIO'
     
     def portfolio_risk_to_excel(
-            self, 
             DIR: str,
             name: str,
             model: str,
