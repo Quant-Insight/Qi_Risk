@@ -65,7 +65,7 @@
     from Qi_risk_portfolio_wrapper import ApiData
     from Qi_risk_portfolio_wrapper import RiskData
     
-    DIR = 'D:/Github/PC_Proff/Risk/Portfolio/Test'
+    DIR = 'PATH-TO-YOUR-PORTFOLIO'
     
     def portfolio_risk_to_excel(
             name: str,
