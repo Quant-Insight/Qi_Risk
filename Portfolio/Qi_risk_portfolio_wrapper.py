@@ -467,6 +467,37 @@ class PortfolioRiskData(RiskData):
 
         return weighted_exposures
 
+    def calculate_risk_port(self,date: str, annualised: bool = False) -> pd.DataFrame:		 
+        """		 
+        Calculates the breakdown per stock of the factor risk for each date, optionally annualized.		 
+        For further information please see the explanatory spreadsheet "Volat Corr" breakdown per stock		 
+                
+        Returns:		 
+            pd.DataFrame: DataFrame that contains the factor risk values for each stock.		 
+        """		 
+        weights_df = pd.DataFrame(self.weights, columns=['weights'],index=self.asset_data.keys())		 
+        port_date_exposures = self.exposures.loc[date]		 
+        date_covar_matrix = pd.DataFrame(self.factor_covariance[date])		 
+        temp_risk_vect = port_date_exposures.dot(date_covar_matrix)		 
+        stock_risk_dic = {}		 
+        stock_risk2_dic = {}		 
+        i=0		 
+        specific_risk_t= np.empty(len(weights_df))		 
+        for stock,s_weight in weights_df.iterrows():		 
+            w = s_weight['weights'] * (252.0 if annualised else 1.0)		 
+            t2 = (self.asset_data[stock].exposures.loc[date] * temp_risk_vect) * w		 
+            stock_risk2_dic[stock] = t2		 
+            stock_risk_dic[stock] = np.sign(t2) * np.sqrt(np.abs(t2))		 
+            specific_risk_t[i] = self.asset_data[stock].risk_model_data.specific_risk[date] * w		 
+            i=i+1		 
+        stock_risk_df = pd.DataFrame.from_dict(stock_risk_dic,orient='index',columns=self.exposures.columns.values.tolist())		 
+        stock_risk_prop_df = pd.DataFrame.from_dict(stock_risk2_dic,orient='index',columns=self.exposures.columns.values.tolist())		 
+        stock_risk_df = stock_risk_df.assign(specific_risk = specific_risk_t)		 
+        stock_risk_prop_df = stock_risk_prop_df.assign(specific_risk = specific_risk_t**2)		 
+        total_risk2 = float(stock_risk_prop_df.sum(axis=0).sum())		 
+                
+        return stock_risk_df,stock_risk_prop_df.div(np.sqrt(total_risk2)),stock_risk_prop_df.div(total_risk2)
+
     def calculate_risk(self) -> pd.DataFrame:
         """
         Calculates the factor risk and risk_model_data (total, specific and factor risk and return)
@@ -623,7 +654,7 @@ class PortfolioRiskData(RiskData):
         return stock_proportion_of_risk, stock_contribution_to_risk
 
     def get_factor_risk_by_stock(
-        self, date: str, annualised: bool = False
+        self, date: str, with_w: bool = False, annualised: bool = False
     ) -> pd.DataFrame:
         """
         Retrieves the factor risk contribution for each stock in the portfolio for a specific date.
@@ -631,21 +662,30 @@ class PortfolioRiskData(RiskData):
 
         Args:
             date (str): The specific date for which to retrieve factor risk data.
+            with_w (bool): Whether to include the portfolio weights or not.
             annualised (bool, optional): Whether to annualize the risk values. Defaults to False.
 
         Returns:
             pd.DataFrame: A DataFrame containing factor risk values for each stock on the specified date.
         """
         results = {}
-        for asset, weight in zip(self.asset_data, self.weights):
-            asset_risk = self.asset_data[asset].factor_risk.loc[date] * weight
-            asset_risk *= sqrt(252) if annualised else 1
-            results[asset] = asset_risk.to_dict()
+        specific_risk_t= np.empty(len(self.weights))
+        i=0
 
-        return pd.DataFrame.from_dict(results).T
+        for asset, weight in zip(self.asset_data, self.weights):
+            w = (weight if with_w else 1.0) * (np.sqrt(252) if annualised else 1)
+            asset_risk = self.asset_data[asset].factor_risk.loc[date] * w
+            results[asset] = asset_risk.to_dict()
+            specific_risk_t[i] = self.asset_data[asset].risk_model_data.specific_risk[date]
+            i=i+1
+
+        total_risk_df= pd.DataFrame.from_dict(results).T
+        total_risk_df = total_risk_df.assign(specific_risk = specific_risk_t)
+
+        return total_risk_df
 
     def get_factor_attribution_by_stock_for_period(
-        self, lookback: int = 22
+        self, lookback: int = 1
     ) -> pd.DataFrame:
         """
         Calculates the return attribution from each factor for each stock in the portfolio over a lookback period,
