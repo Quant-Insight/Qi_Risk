@@ -59,7 +59,7 @@
     import subprocess
     import sys
         
-    os.environ['QI_API_KEY'] = 'YsqPcioaHu5C79mcFlm1N2Mva43kglpfDPbHuFsa'
+    os.environ['QI_API_KEY'] = 'YOUR-API-KEY'
     
     from Qi_risk_portfolio_wrapper import PortfolioRiskData
     from Qi_risk_portfolio_wrapper import ApiData
