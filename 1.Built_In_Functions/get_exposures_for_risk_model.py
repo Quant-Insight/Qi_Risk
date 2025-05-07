@@ -11,7 +11,7 @@
 #               * instrument[str] or identifier[str] (required) - The instrument or identifier you want to pull data for. For instrument use Qi's default asset naming convention, e.g. 'AAPL'.
 #                                                                 For identifier use asset's SEDOL, ISIN or Bloomberg Ticker.
 #
-# If your equity focus consists of approximately 90% US or Canadian assets, please use the US Model with or without the market. All securities have Global and US models.
+# If your equity focus consists of approximately 90% US or Canadian assets, please use the US Model with or without the market. All securities have Global models.
 #
 # Output: Dictionary
 # Units: %
