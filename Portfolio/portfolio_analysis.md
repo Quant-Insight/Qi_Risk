@@ -95,7 +95,7 @@
     
         factor_attribution_by_stock = (
             portfolio_risk.get_factor_attribution_by_stock_for_period(
-                lookback = 1
+                lookback = 3*22
             )
         )
         exposures_by_stock = portfolio_risk.get_weighted_stock_exposures_for_date(
@@ -133,7 +133,7 @@
                 writer, sheet_name=f'exposures_{date_to}', index=True
             )
             factor_attribution_by_stock.to_excel(
-                writer, sheet_name='factor_attribution_1d', index=True
+                writer, sheet_name='factor_attribution_3m', index=True
             )
             risk_by_stock.to_excel(
                 writer, sheet_name=f'single_stock_risk_{date_to}', index=True
