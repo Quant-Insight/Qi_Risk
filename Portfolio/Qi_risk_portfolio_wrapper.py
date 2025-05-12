@@ -1,6 +1,8 @@
 import os
 from abc import ABC, abstractmethod
 from typing import Callable, Dict, List
+from openpyxl import Workbook
+from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
 
 import numpy as np
 import pandas as pd
@@ -380,6 +382,246 @@ class ApiData:
         )).T[identifier_type].tolist()
 
         return api_response
+    
+class PorfolioRiskExcel():
+    @staticmethod
+    def add_description_sheet(workbook, sheet_name="Description"):
+        """
+        Adds a description sheet to the given workbook with predefined data and formatting.
+
+        Args:
+            workbook (Workbook): The openpyxl Workbook object to which the sheet will be added.
+            data (dict): A dictionary with "Sheet" and "Description" keys containing the data.
+            sheet_name (str): Name of the sheet to be added.
+        """
+        ws = workbook.create_sheet(title=sheet_name)
+
+        data = {
+            "Sheet": [
+                "weights",
+                "exposures",
+                "factor_attribution",
+                "risk_and_return_ts",
+                "factor_risk_proportion",
+                "factor_risk_contribution",
+                "exposures_yyyy-mm-dd",
+                "factor_attribution_3m",
+                "single_stock_risk_yyyy-mm-dd",
+                "port_stock_risk_yyyy-mm-dd",
+                "port_stock_MCTR_yyyy-mm-dd",
+                "port_stock_prop_yyyy-mm-dd",
+                "stock_risk_proportion",
+                "stock_risk_contribution",
+                "Factor Glossary",
+            ],
+            "Description": [
+                "Fixed weights (sums to 1 if long only)\nLong or Short",
+                "Weighted exposure to factors  (%)  per factor daily standard deviation move (250d).  (values expressed in % eg 2 =  2%)",
+                "Daily portfolio % return attributable to each individual factor - each day sums to total daily factor return.  (values expressed in % eg 2 =  2%)",
+                "total_return - actual daily portfolio % return  (values expressed in % eg 2 =  2%)\nfactor_return - daily portfolio % return attributable to all factors i.e. total factor daily % return\nspecific_return - daily portfolio % return NOT explained by factors i.e. idiosyncratic\ntotal_risk (vol %) - daily portfolio % predicted total risk (multiply by sqrt(252) to annualise)\nfactor_risk (vol %) - daily portfolio % predicted factor risk (factor risk^2 + specific risk^2 = total risk^2)\nspecific_risk (vol %) - daily portfolio % predicted specific risk (factor risk^2 + specific risk^2 = total risk^2)",
+                "% of total portfolio risk attributable to each individual factor & specific, each day (sums to 100%)",
+                "Daily % predicted risk attributable to each individual factor & specific, which linearly sums to daily portfolio % predicted total risk",
+                "% factor exposure of each individual security within the portfolio on stated date",
+                "Fixed 3mth % portfolio return attributable to each individual security for each factor",
+                "Porfolio's predicted risk attributable to each security for each factor on stated date in Vol %, assuming each individual securty is analyzed in isolation",
+                "Portfolio's predicted risk attributable to each security for each factor on stated date in Vol % - securities are not analyzed in isolation",
+                "Portfolio's predicted risk attributable to each security for each factor on stated date in MCTR %; sums linearly to total risk  - securities are not analyzed in isolation",
+                "% of total porfolio risk attributable to each security for each factor on stated date; sums to 1.0 ",
+                "% of total portfolio risk explained by each individual security for each factor and specific, each day; sums to 1.0",
+                "Daily portfolio % predicted risk by factor & specific attributable to each individual security; sums linearly to total risk",
+                "Factor definitions",
+            ],
+        }
+
+        # Add headers to specific cells
+        ws["B2"] = "Sheet"
+        ws["E2"] = "Description"
+
+        # Style headers
+        header_font = Font(bold=True)
+        ws["B2"].font = header_font
+        ws["E2"].font = header_font
+
+        # Write the data starting from row 4, with an empty row between data rows
+        start_row = 4
+        row_increment = 2  # Leave one empty row between data rows
+        current_row = start_row
+
+        for sheet_name, description in zip(data["Sheet"], data["Description"]):
+            # Write data
+            ws[f"B{current_row}"] = sheet_name
+            ws[f"E{current_row}"] = description
+
+            # Bold the cell in column B
+            ws[f"B{current_row}"].font = Font(bold=True)
+
+            current_row += row_increment  # Skip one row
+
+        # Adjust column widths for readability
+        ws.column_dimensions["B"].width = 25
+        ws.column_dimensions["E"].width = 100
+
+        # Define a bottom border style
+        thin_bottom_border = Border(bottom=Side(style="thin"))
+
+        # Apply bottom border to header row and last row of data
+        for row in [2, current_row - row_increment]:
+            for col in range(2, 6):  # Columns B (2) to E (5)
+                ws.cell(row=row, column=col).border = thin_bottom_border
+
+        # Hide gridlines (optional)
+        ws.sheet_view.showGridLines = False
+
+    @staticmethod
+    def add_factor_glossary_sheet(workbook, df, sheet_name="Factor Glossary"):
+        """
+        Adds a Factor Glossary sheet to the workbook based on a given DataFrame,
+        with the table starting in cell B4 and no gridlines.
+
+        Args:
+            workbook (Workbook): The openpyxl Workbook object to which the sheet will be added.
+            df (pd.DataFrame): The DataFrame containing the Factor Glossary data.
+            sheet_name (str): Name of the sheet to be added.
+        """
+        # Create a new sheet
+        ws = workbook.create_sheet(title=sheet_name)
+
+        # Hide gridlines
+        ws.sheet_view.showGridLines = False
+
+        # Define styles
+        header_font = Font(bold=True, size=12)
+        header_fill = PatternFill(start_color="6ABDE9", end_color="6ABDE9", fill_type="solid")
+        text_font = Font(size=11)
+        alignment = Alignment(horizontal="left", vertical="center", wrap_text=True)
+        border = Border(
+            left=Side(style="thin"),
+            right=Side(style="thin"),
+            top=Side(style="thin"),
+            bottom=Side(style="thin"),
+        )
+
+        # Write headers, starting in cell B4
+        start_row = 4
+        start_col = 2  # Column B
+        for col_num, column_title in enumerate(df.columns, start=start_col):
+            cell = ws.cell(row=start_row, column=col_num, value=column_title)
+            cell.font = header_font
+            cell.fill = header_fill
+            cell.alignment = alignment
+            cell.border = border
+
+        # Write data rows, starting below the headers
+        for row_num, row_data in enumerate(df.itertuples(index=False), start=start_row + 1):
+            for col_num, value in enumerate(row_data, start=start_col):
+                cell = ws.cell(row=row_num, column=col_num, value=value)
+                cell.font = text_font
+                cell.alignment = alignment
+                cell.border = border
+
+        # Adjust column widths
+        for col_num, column_title in enumerate(df.columns, start=start_col):
+            column_letter = chr(64 + col_num)  # Convert column number to letter
+            ws.column_dimensions[column_letter].width = 20  # Adjust as needed
+
+        # Adjust row heights
+        for row_num in range(start_row, start_row + len(df) + 1):  # Header + rows
+            ws.row_dimensions[row_num].height = 18  # Adjust as needed
+
+    def portfolio_risk_to_excel(
+            self, 
+            DIR: str,
+            name: str,
+            model: str,
+            assets: List[str],
+            weights: List[str],
+            date_from: str,
+            date_to: str,
+        ) -> None:
+
+        # Initialise portfolio risk data class and pull/calculate required data.
+        portfolio_risk = PortfolioRiskData(model)
+        portfolio_risk.get_data(assets, weights, date_from, date_to)
+
+        factor_attribution = portfolio_risk.get_factor_attribution()
+        factor_risk_proportion = portfolio_risk.get_factor_proportion_of_risk()
+        factor_contribution_to_risk = (
+            portfolio_risk.get_factor_contribution_to_risk(annualised=False)
+        )
+        stock_proportion_of_risk, stock_contribution_to_risk = (
+            portfolio_risk.get_portfolio_risk_ts_by_stock(annualised=False)
+        )
+        risk_by_stock = portfolio_risk.get_factor_risk_by_stock(
+            date_to, with_w = False, annualised=False
+        )
+        risk_by_stock_port,MCTR_by_stock_port,prop_by_stock_port = portfolio_risk.calculate_risk_port(date_to, annualised = False)
+
+        factor_attribution_by_stock = (
+            portfolio_risk.get_factor_attribution_by_stock_for_period(
+                lookback=3 * 22
+            )
+        )
+        exposures_by_stock = portfolio_risk.get_weighted_stock_exposures_for_date(
+            date_to
+        )
+
+        final_portfolio_df = pd.DataFrame({'Assets': assets, 'Weights': weights, 'Direction': ['L' if w > 0 else 'S' for w in weights]})
+        final_portfolio_df['Asset_direction'] = final_portfolio_df['Assets'] + '_' + final_portfolio_df['Direction']
+
+        file_path = f'{DIR}/{name}_portfolio_{model}_{date_to}.xlsx'
+
+        # Create a Pandas Excel writer using Openpyxl as the engine
+        with pd.ExcelWriter(file_path, engine='openpyxl') as writer:
+            # Write data to different sheets
+
+            # Add the "Description" sheet
+            self.add_description_sheet(writer.book)
+
+            # Add the "weights" sheet
+            final_portfolio_df.to_excel(writer, sheet_name='weights', index=False)
+
+            portfolio_risk.exposures.to_excel(
+                writer, sheet_name='exposures', index=True
+            )
+            factor_attribution.to_excel(
+                writer, sheet_name='factor_attribution', index=True
+            )
+            portfolio_risk.risk_model_data.to_excel(
+                writer, sheet_name='risk_and_return_ts', index=True
+            )
+            factor_risk_proportion.to_excel(
+                writer, sheet_name='factor_risk_proportion', index=True
+            )
+            factor_contribution_to_risk.to_excel(
+                writer, sheet_name='factor_risk_contribution', index=True
+            )
+            exposures_by_stock.to_excel(
+                writer, sheet_name=f'exposures_{date_to}', index=True
+            )
+            factor_attribution_by_stock.to_excel(
+                writer, sheet_name='factor_attribution_3m', index=True
+            )
+            risk_by_stock.to_excel(
+                writer, sheet_name=f'single_stock_risk_{date_to}', index=True
+            )
+            risk_by_stock_port.to_excel(
+                writer, sheet_name=f'port_stock_risk_{date_to}', index=True
+            )
+            MCTR_by_stock_port.to_excel(
+                writer, sheet_name=f'port_stock_MCTR_{date_to}', index=True
+            )
+            prop_by_stock_port.to_excel(
+                writer, sheet_name=f'port_stock_prop_{date_to}', index=True
+            )
+            stock_proportion_of_risk.to_excel(
+                writer, sheet_name='stock_risk_proportion', index=True
+            )
+            stock_contribution_to_risk.to_excel(
+                writer, sheet_name='stock_risk_contribution', index=True
+            )
+
+            factorset_df = pd.DataFrame(api_instance.get_risk_model_factorset(model))[['factor', 'descriptor']]
+            self.add_factor_glossary_sheet(writer.book, factorset_df)
 
 
 class PortfolioRiskData(RiskData):
@@ -685,7 +927,7 @@ class PortfolioRiskData(RiskData):
         return total_risk_df
 
     def get_factor_attribution_by_stock_for_period(
-        self, lookback: int = 22
+        self, lookback: int = 1
     ) -> pd.DataFrame:
         """
         Calculates the return attribution from each factor for each stock in the portfolio over a lookback period,
