@@ -685,7 +685,7 @@ class PortfolioRiskData(RiskData):
         return total_risk_df
 
     def get_factor_attribution_by_stock_for_period(
-        self, lookback: int = 1
+        self, lookback: int = 22
     ) -> pd.DataFrame:
         """
         Calculates the return attribution from each factor for each stock in the portfolio over a lookback period,
