@@ -46,12 +46,7 @@
 
 
                   
-![image](https://github.com/user-attachments/assets/770c3aed-9616-4de6-88ee-f3703da8b7da)
-
-
-
-
-    
+   
     from typing import List
 
     import pandas as pd
@@ -64,95 +59,9 @@
     from Qi_risk_portfolio_wrapper import PortfolioRiskData
     from Qi_risk_portfolio_wrapper import ApiData
     from Qi_risk_portfolio_wrapper import RiskData
+    from Qi_risk_portfolio_wrapper import PorfolioRiskExcel
     
     DIR = 'PATH-TO-YOUR-PORTFOLIO'
-    
-    def portfolio_risk_to_excel(
-            name: str,
-            model: str,
-            assets: List[str],
-            weights: List[str],
-            date_from: str,
-            date_to: str,
-        ) -> None:
-    
-        # Initialise portfolio risk data class and pull/calculate required data.
-        portfolio_risk = PortfolioRiskData(model)
-        portfolio_risk.get_data(assets, weights, date_from, date_to)
-    
-        factor_attribution = portfolio_risk.get_factor_attribution()
-        factor_risk_proportion = portfolio_risk.get_factor_proportion_of_risk()
-        factor_contribution_to_risk = (
-            portfolio_risk.get_factor_contribution_to_risk(annualised=False)
-        )
-        stock_proportion_of_risk, stock_contribution_to_risk = (
-            portfolio_risk.get_portfolio_risk_ts_by_stock(annualised=False)
-        )
-        risk_by_stock = portfolio_risk.get_factor_risk_by_stock(
-            date_to, with_w = False, annualised=False
-        )
-        risk_by_stock_port,MCTR_by_stock_port,prop_by_stock_port = portfolio_risk.calculate_risk_port(date_to, annualised = False)
-    
-        factor_attribution_by_stock = (
-            portfolio_risk.get_factor_attribution_by_stock_for_period(
-                lookback = 3*22
-            )
-        )
-        exposures_by_stock = portfolio_risk.get_weighted_stock_exposures_for_date(
-            date_to
-        )
-    
-        final_portfolio_df = pd.DataFrame({'Assets': assets, 'Weights': weights, 'Direction': ['L' if w > 0 else 'S' for w in weights]})
-        final_portfolio_df['Asset_direction'] = final_portfolio_df['Assets'] + '_' + final_portfolio_df['Direction']
-    
-        file_path = f'{DIR}/{name}_portfolio_{model}_{date_to}.xlsx'
-    
-        # Create a Pandas Excel writer using Openpyxl as the engine
-        with pd.ExcelWriter(file_path, engine='openpyxl') as writer:
-            # Write data to different sheets
-    
-            # Add the "weights" sheet
-            final_portfolio_df.to_excel(writer, sheet_name='weights', index=False)
-    
-            portfolio_risk.exposures.to_excel(
-                writer, sheet_name='exposures', index=True
-            )
-            factor_attribution.to_excel(
-                writer, sheet_name='factor_attribution', index=True
-            )
-            portfolio_risk.risk_model_data.to_excel(
-                writer, sheet_name='risk_and_return_ts', index=True
-            )
-            factor_risk_proportion.to_excel(
-                writer, sheet_name='factor_risk_proportion', index=True
-            )
-            factor_contribution_to_risk.to_excel(
-                writer, sheet_name='factor_risk_contribution', index=True
-            )
-            exposures_by_stock.to_excel(
-                writer, sheet_name=f'exposures_{date_to}', index=True
-            )
-            factor_attribution_by_stock.to_excel(
-                writer, sheet_name='factor_attribution_3m', index=True
-            )
-            risk_by_stock.to_excel(
-                writer, sheet_name=f'single_stock_risk_{date_to}', index=True
-            )
-            risk_by_stock_port.to_excel(
-                writer, sheet_name=f'port_stock_risk_{date_to}', index=True
-            )
-            MCTR_by_stock_port.to_excel(
-                writer, sheet_name=f'port_stock_MCTR_{date_to}', index=True
-            )
-            prop_by_stock_port.to_excel(
-                writer, sheet_name=f'port_stock_prop_{date_to}', index=True
-            )
-            stock_proportion_of_risk.to_excel(
-                writer, sheet_name='stock_risk_proportion', index=True
-            )
-            stock_contribution_to_risk.to_excel(
-                writer, sheet_name='stock_risk_contribution', index=True
-            )    
     
     if __name__ == '__main__':
     
@@ -165,6 +74,8 @@
     
         # Get portfolio's coverage
         api_data = ApiData()
+    
+        portfolioExcel = PorfolioRiskExcel()
     
         portfolio_data = PortfolioRiskData(model)
     
@@ -194,7 +105,8 @@
             ~df_portfolio['Identifier'].isin(missing_instruments + missing_data)
         ]['Weight'].tolist()
     
-        portfolio_risk_to_excel(
+        portfolioExcel.portfolio_risk_to_excel(
+            DIR,
             portfolio_analysis_name,
             model,
             instruments,
