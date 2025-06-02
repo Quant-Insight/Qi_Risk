@@ -2,9 +2,11 @@
 
 This repository includes some examples of how to use Quant-Insight's API. 
 
-It contains five main folders:
+It contains three main folders:
 
-  * 1.Built_In_Functions: contains Qi Risk API's built-in functions.
+  * Built_In_Functions: contains Qi Risk API's built-in functions.
+  * Portfolio: Script to analyse your portfolio.
+  * Use_Cases: Ready-to-use examples of our API. 
 
 ## What do you need to start using the API?
 
