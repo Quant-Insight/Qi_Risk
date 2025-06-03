@@ -522,7 +522,7 @@ class PorfolioRiskExcel():
         # Adjust column widths
         for col_num, column_title in enumerate(df.columns, start=start_col):
             column_letter = chr(64 + col_num)  # Convert column number to letter
-            ws.column_dimensions[column_letter].width = 20  # Adjust as needed
+            ws.column_dimensions[column_letter].width = 30  # Adjust as needed
 
         # Adjust row heights
         for row_num in range(start_row, start_row + len(df) + 1):  # Header + rows
