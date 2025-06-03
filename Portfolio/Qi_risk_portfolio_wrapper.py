@@ -423,10 +423,10 @@ class PorfolioRiskExcel():
                 "Daily % predicted risk attributable to each individual factor & specific, which linearly sums to daily portfolio % predicted total risk",
                 "% factor exposure of each individual security within the portfolio on stated date",
                 "Fixed 3mth % portfolio return attributable to each individual security for each factor",
-                "Porfolio's predicted risk attributable to each security for each factor on stated date in Vol %, assuming each individual securty is analyzed in isolation",
+                "Portfolio's predicted risk attributable to each security for each factor on stated date in Vol %, assuming each individual security is analyzed in isolation",
                 "Portfolio's predicted risk attributable to each security for each factor on stated date in Vol % - securities are not analyzed in isolation",
                 "Portfolio's predicted risk attributable to each security for each factor on stated date in MCTR %; sums linearly to total risk  - securities are not analyzed in isolation",
-                "% of total porfolio risk attributable to each security for each factor on stated date; sums to 1.0 ",
+                "% of total portfolio risk attributable to each security for each factor on stated date; sums to 1.0 ",
                 "% of total portfolio risk explained by each individual security for each factor and specific, each day; sums to 1.0",
                 "Daily portfolio % predicted risk by factor & specific attributable to each individual security; sums linearly to total risk",
                 "Factor definitions",
@@ -450,10 +450,13 @@ class PorfolioRiskExcel():
         for sheet_name, description in zip(data["Sheet"], data["Description"]):
             # Write data
             ws[f"B{current_row}"] = sheet_name
-            ws[f"E{current_row}"] = description
 
             # Bold the cell in column B
             ws[f"B{current_row}"].font = Font(bold=True)
+            
+            desc_cell = ws[f"E{current_row}"]
+            desc_cell.value = description
+            desc_cell.alignment = Alignment(wrap_text=True)
 
             current_row += row_increment  # Skip one row
 
