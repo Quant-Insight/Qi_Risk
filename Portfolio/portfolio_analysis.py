@@ -61,7 +61,7 @@ from portfolio_wrapper import RiskData
 from portfolio_wrapper import PortfolioAnalysis
 from portfolio_wrapper import PorfolioRiskExcel
 
-DIR = '/Users/aidapendasfernandez/Documents/Github/PC_Proff/Risk/portfolio_analysis'
+DIR = 'PATH-TO-YOUR-PORTFOLIO'
 
 if __name__ == '__main__':
 
