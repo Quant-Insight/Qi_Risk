@@ -1,3 +1,10 @@
+### Visualization ideas
+
+After pulling the data for your asset (i.e. SPY), you can create a scatter plot with the actual and 
+factor return values for the selected period. 
+
+![return_attribution_scatter_historical_SPY](https://github.com/user-attachments/assets/c7211bcd-2cc3-4cb6-8dbd-53ddba20796b)
+
 
 ### Code
 
@@ -114,10 +121,4 @@
         except Exception as e:
             print(f'Unexpected error: {e}')
 
-### Visualization ideas
-
-After pulling the data for your asset (i.e. SPY), you can create a scatter plot with the actual and 
-factor return values for the selected period. 
-
-![return_attribution_scatter_historical_SPY](https://github.com/user-attachments/assets/c7211bcd-2cc3-4cb6-8dbd-53ddba20796b)
 
