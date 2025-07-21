@@ -44,51 +44,51 @@
     #        * Excel file with the covered portfolio analysis, including the following sheets:
 
 
-
-                  
-   
     from typing import List
 
     import pandas as pd
     import os
     import subprocess
     import sys
-        
+    
     os.environ['QI_API_KEY'] = 'YOUR-API-KEY'
+        
+    from portfolio_wrapper import PortfolioRiskData
+    from portfolio_wrapper import ApiData
+    from portfolio_wrapper import RiskData
+    from portfolio_wrapper import PortfolioAnalysis
+    from portfolio_wrapper import PorfolioRiskExcel
     
-    from Qi_risk_portfolio_wrapper import PortfolioRiskData
-    from Qi_risk_portfolio_wrapper import ApiData
-    from Qi_risk_portfolio_wrapper import RiskData
-    from Qi_risk_portfolio_wrapper import PorfolioRiskExcel
-    
-    DIR = 'PATH-TO-YOUR-PORTFOLIO'
+    DIR = '/Users/aidapendasfernandez/Documents/Github/PC_Proff/Risk/portfolio_analysis'
     
     if __name__ == '__main__':
     
-        portfolio_analysis_name = 'Portfolio_output'
-        portfolio_name = 'portfolio_test.csv'
-        model = 'QI_GLOBAL_MACRO_MT_1'
-        date_from = '2024-11-22'
-        date_to = '2025-04-29'
+        portfolio_analysis_name = 'portfolio_output'
+        portfolio_name = 'test_portfolio.csv'
+        model = 'QI_US_MACRO_MT_1'
+        date_from = '2025-01-02'
+        date_to = '2025-07-18'
         identifier_type = 'SEDOL'
     
-        # Get portfolio's coverage
         api_data = ApiData()
-    
         portfolioExcel = PorfolioRiskExcel()
-    
         portfolio_data = PortfolioRiskData(model)
     
+        # Get portfolio's coverage
         risk_model_universe = api_data.get_universe_by_model(
-            model, identifier_type=identifier_type, include_delisted=False
+            model, identifier_type=identifier_type, include_delisted=True
         )
     
         df_portfolio = pd.read_csv(DIR + '/' + portfolio_name)
     
-        missing_instruments, missing_data, instruments = (
+        missing_instruments, missing_data, instruments = ( 
             portfolio_data.get_portfolio_coverage(
-                df_portfolio, risk_model_universe, model, date_from, date_to, 
-                identifier_type
+                df_portfolio,
+                risk_model_universe,
+                model,
+                date_from,
+                date_to,
+                identifier_type,
             )
         )
     
@@ -114,3 +114,8 @@
             date_from,
             date_to,
         )
+    
+        file_path_excel = f'{DIR}/{portfolio_analysis_name}_portfolio_{model}_{date_to}.xlsx'
+    
+        data = PortfolioAnalysis(file_path_excel)
+        data.runner()
