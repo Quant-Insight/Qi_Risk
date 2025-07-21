@@ -1747,7 +1747,7 @@ class ApiData:
     def get_factor_stds_data(
         self, model: str, date_from: str, date_to: str
     ) -> pd.DataFrame:
-        func = api_instance.get_descriptor_stds_for_risk_model
+        func = api_instance.get_factor_returns_stds_for_risk_model
         factor_stds = self._get_data_for_func(func, model, date_from, date_to)
 
         return pd.DataFrame.from_dict(factor_stds).T
