@@ -1,3 +1,9 @@
+### Visualization ideas
+After pulling the data for your asset (i.e. SPY), you can create a bar chart showing a snapshot of an instrument's exposures:
+
+![factor_exposure_bar_chart_SPY](https://github.com/user-attachments/assets/0e599ac2-2421-4cc5-b8db-bd9d2c4c0666)
+
+
 ### Code
   
     #########################################################################################################
@@ -55,8 +61,5 @@
         except Exception as e:
             print(f'Unexpected error: {e}')
 
-### Visualization ideas
-After pulling the data for your asset (i.e. SPY), you can create a bar chart showing a snapshot of an instrument's exposures:
 
-![factor_exposure_bar_chart_SPY](https://github.com/user-attachments/assets/0e599ac2-2421-4cc5-b8db-bd9d2c4c0666)
 
