@@ -17,7 +17,7 @@
 #
 # Inputs: 
 #               * DIR [str] (required) - Path to your portfolio. 
-#               * portfolio_name [str] required - Name of the Excel(.xlsx) file containing the 
+#               * portfolio_name [str] required - Name of the csv (.csv) file containing the 
 #                                                 portfolio to analyse.
 #                                                 
 #                                                 The file must have the following format:
