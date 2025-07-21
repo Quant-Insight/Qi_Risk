@@ -1,6 +1,6 @@
 ### Visualization ideas
 
-After pulling the data for your asset (i.e. SPY), you can create a table and colour-code it based on the values obtained: 
+After pulling the data for your asset (i.e. SPY) using the code below, you can create a table and colour-code it based on the values obtained: 
 ![return_attribution_multiperiod_table_SPY](https://github.com/user-attachments/assets/ebbe4cf7-abd8-48fd-bbb8-7cf176a05504)
 
 ### Code
