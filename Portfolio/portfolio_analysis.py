@@ -55,11 +55,11 @@ import sys
 
 os.environ['QI_API_KEY'] = 'YOUR-API-KEY'
     
-from portfolio_wrapper import PortfolioRiskData
-from portfolio_wrapper import ApiData
-from portfolio_wrapper import RiskData
-from portfolio_wrapper import PortfolioAnalysis
-from portfolio_wrapper import PorfolioRiskExcel
+from Qi_risk_portfolio_wrapper import PortfolioRiskData
+from Qi_risk_portfolio_wrapper import ApiData
+from Qi_risk_portfolio_wrapper import RiskData
+from Qi_risk_portfolio_wrapper import PortfolioAnalysis
+from Qi_risk_portfolio_wrapper import PorfolioRiskExcel
 
 DIR = 'PATH-TO-YOUR-PORTFOLIO'
 
