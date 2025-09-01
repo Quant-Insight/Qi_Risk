@@ -24,7 +24,7 @@
 # Output: 
 #               * DataFrame - Scenario analysis for all the specified assets. 
 #
-#                                                                     AAPL	      META	      MSFT
+#                                                                     AAPL	        META	     MSFT
 #                Peripheral Impact (CB QT Expectations)	            0.063827	 -0.759291	   0.078839
 #                Peripheral Impact (CB Rate Expectations)	        0.093767	  1.224307	  -0.058702
 #                Peripheral Impact (DM FX)	                        0.020340	 -0.029754	  -0.034401
