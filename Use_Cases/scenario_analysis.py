@@ -26,20 +26,20 @@
 #
 #                                                                     AAPL	      META	      MSFT
 #                Peripheral Impact (CB QT Expectations)	            0.063827	 -0.759291	   0.078839
-#                Peripheral Impact (CB Rate Expectations)	          0.093767	  1.224307	  -0.058702
+#                Peripheral Impact (CB Rate Expectations)	        0.093767	  1.224307	  -0.058702
 #                Peripheral Impact (DM FX)	                        0.020340	 -0.029754	  -0.034401
-#                Peripheral Impact (Economic Growth)	              0.217659	 -0.189605	   0.069028
-#                Peripheral Impact (Energy)	                       -0.109202    0.070733	  -0.010401
-#                Peripheral Impact (Forward Growth Expectations)	 -0.269165	 -0.001072	  -0.090072
+#                Peripheral Impact (Economic Growth)	            0.217659	 -0.189605	   0.069028
+#                Peripheral Impact (Energy)	                       -0.109202      0.070733	  -0.010401
+#                Peripheral Impact (Forward Growth Expectations)   -0.269165	 -0.001072	  -0.090072
 #                Peripheral Impact (Metals)	                        0.029646	  0.060739	   0.036157
 #                Peripheral Impact (Real Rates)	                    0.037301	 -0.013151	  -0.038902
 #                Peripheral Impact (Risk Aversion)	               -2.472159	 -2.452713	  -2.797113
 #                Peripheral Impact (10Y Yield)	                    1.001371	 -0.775926	   0.375929
-#                Total Peripheral Impact	                         -1.386615	 -2.865733	  -2.469638
-#                Direct Impact (Corporate Credit)	                 -1.910101	 -3.344635	  -2.803243
+#                Total Peripheral Impact	                       -1.386615	 -2.865733	  -2.469638
+#                Direct Impact (Corporate Credit)	               -1.910101	 -3.344635	  -2.803243
 #                Direct Impact (Inflation)	                       -3.068826	 -2.459342	  -2.427318
-#                Total Direct Impact	                             -4.978927	 -5.803977	  -5.230561
-#                Total Impact	                                     -6.365543	 -8.669709	  -7.700199
+#                Total Direct Impact	                           -4.978927	 -5.803977	  -5.230561
+#                Total Impact	                                   -6.365543	 -8.669709	  -7.700199
 #
 #########################################################################################################
 
