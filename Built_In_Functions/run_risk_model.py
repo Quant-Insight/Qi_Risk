@@ -14,7 +14,9 @@
 #                                                ...
 #                                                "2025-10-03": 146.5317237
 #                                                }
+#                                                Note that if the time series are expressed in returns, they should be expressed in percentage points. 
 #               * daily_returns [bool] (optional) - If True, the time series consists of daily returns (not price data). By default, this field will be set to False.  
+#                                                  
 # Output: dict 
 #               * "factors": List of factor names (strings), e.g., ["Real Rates", "Metals", "Risk Aversion", ...].
 #
@@ -22,13 +24,13 @@
 #                           order (most recent date first). Each object contains:
 #
 #                       * "date": The date in YYYY-MM-DD format (string).
-#                       * "total_return": The total return for the day (number).
-#                       * "factor_return": The return attributed to macro factors (number).
-#                       * "specific_return": The idiosyncratic (specific) return not explained by factors (number).
-#                       * "total_risk": The total risk/volatility (number).
-#                       * "factor_risk": The risk attributed to macro factors (number).
-#                       * "specific_risk": The idiosyncratic risk (number).
-#                       * "exposures": An array of exposure values corresponding to the factors (numbers).
+#                       * "total_return": The total return for the day (number - %).
+#                       * "factor_return": The return attributed to macro factors (number - %).
+#                       * "specific_return": The idiosyncratic (specific) return not explained by factors (number - %).
+#                       * "total_risk": The total risk/volatility (number - %).
+#                       * "factor_risk": The risk attributed to macro factors (number - %).
+#                       * "specific_risk": The idiosyncratic risk (number - %).
+#                       * "exposures": An array of exposure values corresponding to the factors (numbers - %).
 #                       * "constant": A constant term in the model (number).
 #                
 #############################################################################################################################################################################################
