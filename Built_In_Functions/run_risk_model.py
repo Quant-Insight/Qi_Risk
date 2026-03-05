@@ -14,7 +14,9 @@
 #                                                ...
 #                                                "2025-10-03": 146.5317237
 #                                                }
-#                                                Note that if the time series are expressed in returns, they should be expressed in percentage points. 
+#
+#                                                ** Note that if the time series are expressed in returns, they should be expressed in percentage points. 
+#
 #               * daily_returns [bool] (optional) - If True, the time series consists of daily returns (not price data). By default, this field will be set to False.  
 #                                                  
 # Output: dict 
