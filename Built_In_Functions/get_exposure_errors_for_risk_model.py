@@ -11,9 +11,9 @@
 #               * instrument[str] or identifier[str] or instruments[list[str]] or identifiers [list[str]] (required) - 
 #                                                 * instrument ->  Instrument name to return data for.
 #                                                 * identifier ->  Identifier to return data for.
-#                                                 * instruments -> List of instrument names (e.g. [’GOOGL’,’AAPL’]). Returns a nested dictionary keyed by
+#                                                 * instruments -> List of instrument names (10 instruments max). Returns a nested dictionary keyed by
 #                                                    instrument name
-#                                                 * identifiers -> List of identifiers. Returns a nested dictionary keyed by identifier. 
+#                                                 * identifiers -> List of identifiers (10 identifiers max). Returns a nested dictionary keyed by identifier. 
 #
 #                                                 For instrument/s use Qi's default asset naming convention, e.g. 'AAPL'.
 #                                                 For identifier/s use asset's SEDOL, ISIN or Bloomberg Ticker.
@@ -74,10 +74,10 @@ api_instance = qi_client.DefaultApi(qi_client.ApiClient(configuration))
 risk_model = 'QI_US_MACRO_MT_1' 
 date_from = '2023-01-01'  
 date_to = '2023-12-31'
-identifier = 'SPX Index' 
+instruments = ['AAPL', 'META']
 
 try:
-    api_response = api_instance.get_exposure_errors_for_risk_model(risk_model, identifier=identifier, date_from=date_from, date_to=date_to)
+    api_response = api_instance.get_exposure_errors_for_risk_model(risk_model, instruments=instruments, date_from=date_from, date_to=date_to)
     pprint(api_response)
 except ApiException as e:
     print(f"Exception when calling DefaultApi:get_exposure_errors_for_risk_model: {e}")
